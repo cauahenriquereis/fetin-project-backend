@@ -75,7 +75,7 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     Patient.priority_number < patient.priority_number
     ).count()
     # Medium includes all "alta" patients ahead
-    patients_ahead_medium += patients_ahead_high
+    patients_ahead_medium2 = patients_ahead_medium + patients_ahead_high
 
     patients_ahead_low = session.query(Patient).filter(
     Patient.status == "aguardando",
@@ -83,7 +83,7 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     Patient.priority_number < patient.priority_number
     ).count()
     # Low includes all "alta" and "média" patients ahead
-    patients_ahead_low += patients_ahead_medium
+    patients_ahead_low2 = patients_ahead_low + patients_ahead_medium2
 
     # Calculate estimated waiting time based on urgency level
     # alta: 15 min/patient | média: 10 min/patient | baixa: 5 min/patient
@@ -98,9 +98,9 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     if (patient.priority_number < 199):
         queue_position = patients_ahead_high
     elif (200 <= patient.priority_number < 299):
-        queue_position = patients_ahead_medium
+        queue_position = patients_ahead_medium2
     else:
-        queue_position = patients_ahead_low    
+        queue_position = patients_ahead_low2   
 
     return PatientQueueInfo(
         patient=patient,

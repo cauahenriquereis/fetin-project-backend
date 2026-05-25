@@ -9,7 +9,7 @@ from config import GEMINI_API_KEY
 # Initialize Gemini client once at module level
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# 1. Definimos o Schema (Molde) da resposta esperada usando Pydantic
+
 class TriageResponse(BaseModel):
     urgency_level: Literal["baixa", "média", "alta"] = Field(
         description="Nível de urgência estrito."
@@ -19,7 +19,6 @@ class TriageResponse(BaseModel):
     )
 
 def symptoms_analyze(symptoms: str, pain_level: int, age: int) -> dict:
-    # 2. Separamos as regras do sistema (System Instructions)
     system_instruction = """Você é a IA médica de triagem do sistema hospitalar FETIN, atuando com base em diretrizes rigorosas (semelhantes ao Protocolo de Manchester adaptado para 3 níveis). Sua função é classificar pacientes de forma segura e analítica, focando no risco de morbimortalidade.
 
 DIRETRIZES DE TRIAGEM CLÍNICA:
@@ -29,7 +28,6 @@ DIRETRIZES DE TRIAGEM CLÍNICA:
 4. Critérios para "média": Condições agudas que necessitam de avaliação médica rápida, sem risco de morte iminente. (ex: fraturas fechadas, dor abdominal aguda, cortes profundos).
 5. Critérios para "baixa": Condições crônicas agudizadas, quadros não-urgentes ou queixas leves. (ex: sintomas de vias aéreas superiores, dores musculares sem trauma)."""
 
-    # 3. O prompt do usuário agora recebe apenas os dados crus
     user_prompt = f"""
 DADOS DO PACIENTE:
 - Idade: {age} anos
@@ -42,16 +40,15 @@ DADOS DO PACIENTE:
         try:
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
-                contents=user_prompt, # Passa apenas os dados do paciente aqui
+                contents=user_prompt,
                 config=types.GenerateContentConfig(
-                    system_instruction=system_instruction, # Passa as regras aqui
-                    temperature=0.0, # GARANTE consistência clínica (sem alucinações criativas)
+                    system_instruction=system_instruction, 
+                    temperature=0.0, 
                     response_mime_type="application/json",
-                    response_schema=TriageResponse, # Força a IA a usar o molde do Pydantic
+                    response_schema=TriageResponse, 
                 )
             )
 
-            # O json.loads continua válido
             resultado = json.loads(response.text)
             resultado["ai_analyzed"] = True
             
@@ -69,6 +66,5 @@ DADOS DO PACIENTE:
             return {"urgency_level": "média", "reasoning": "Erro na análise automática (Client)", "ai_analyzed": False}
 
         except (json.JSONDecodeError, ValueError) as e:
-            # ValueError pode acontecer se a resposta for bloqueada por filtros de segurança (Safety)
             print(f"Erro no processamento da resposta da IA: {e}")
             return {"urgency_level": "média", "reasoning": "Erro na formatação ou conteúdo bloqueado", "ai_analyzed": False}
