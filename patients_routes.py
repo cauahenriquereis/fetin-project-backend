@@ -102,8 +102,14 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     else:
         queue_position = patients_ahead_low2   
 
+    if patient.status != "aguardando":
+        raise HTTPException(
+        status_code=400,
+        detail=f"Paciente não está na fila. Status atual: {patient.status}"
+    )
+
     return PatientQueueInfo(
         patient=patient,
         queue_position=queue_position,
         waiting_time_minutes=waiting_time
-    )      
+    )  
