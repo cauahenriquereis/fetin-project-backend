@@ -14,8 +14,8 @@ class PatientOutput(BaseModel):
     age: int
     symptoms: str
     pain_level: int
-    urgency_level: Optional[str] = None
-    priority_number: Optional[int] = None
+    urgency_level: 
+    priority_number:
     status: str
     created_at: datetime
 
