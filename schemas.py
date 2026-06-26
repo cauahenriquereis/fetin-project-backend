@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Literal, Optional
+from typing import Literal
 from datetime import datetime
 
 class PatientInput(BaseModel):
@@ -14,8 +14,8 @@ class PatientOutput(BaseModel):
     age: int
     symptoms: str
     pain_level: int
-    urgency_level: 
-    priority_number:
+    urgency_level: str
+    priority_number: int
     status: str
     created_at: datetime
 

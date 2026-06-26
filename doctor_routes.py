@@ -23,7 +23,7 @@ async def home():
 
 @doctor_router.post("/login")
 async def login(dados: LoginRequest):
-     # JSON login — used by the frontend
+    # JSON login — used by the frontend
     # Returns both access token (30 min) and refresh token (7 days)
     if dados.senha == DOCTOR_PASSWORD:
         access_token = token_generator()
