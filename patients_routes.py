@@ -86,13 +86,13 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     patients_ahead_low2 = patients_ahead_low + patients_ahead_medium2
 
     # Calculate estimated waiting time based on urgency level
-    # alta: 10 min/patient | média: 7.5 min/patient | baixa: 5 min/patient
+    # alta: 10 min/patient | média: 7 min/patient | baixa: 5 min/patient
     if(patient.priority_number < 199):
         waiting_time = patients_ahead_high * 10
     elif(200 <= patient.priority_number < 299):
-        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7.5)
+        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7)
     else:
-        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7.5) + (patients_ahead_low * 5)  
+        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7) + (patients_ahead_low * 5)  
 
     # Determine queue position based on urgency level
     if (patient.priority_number < 199):
