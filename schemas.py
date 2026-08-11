@@ -26,7 +26,8 @@ class PatientOutput(BaseModel):
 class PatientQueueInfo(BaseModel):
     patient: PatientOutput
     queue_position: int
-    waiting_time_minutes: int        
+    waiting_time_minutes: int   
+    priority_number: int     
 
         
 class LoginRequest(BaseModel):
