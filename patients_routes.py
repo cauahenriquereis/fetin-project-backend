@@ -88,7 +88,7 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     # Calculate estimated waiting time based on urgency level
     # alta: 10 min/patient | média: 7 min/patient | baixa: 5 min/patient
     if(patient.priority_number < 199):
-        waiting_time = patients_ahead_high * 10
+        waiting_time = (patients_ahead_high * 10)
     elif(200 <= patient.priority_number < 299):
         waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7)
     else:
@@ -96,11 +96,11 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
 
     # Determine queue position based on urgency level
     if (patient.priority_number < 199):
-        queue_position = patients_ahead_high
+        queue_position = patients_ahead_high + 1
     elif (200 <= patient.priority_number < 299):
-        queue_position = patients_ahead_medium2
+        queue_position = patients_ahead_medium2 + 1
     else:
-        queue_position = patients_ahead_low2   
+        queue_position = patients_ahead_low2 + 1 
 
     if patient.status != "aguardando":
         raise HTTPException(
