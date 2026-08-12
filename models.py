@@ -19,6 +19,7 @@ class Patient(Base):
 
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     full_name = Column("full_name", String(100), nullable=False)
+    email = Column("email", String(100), nullable=True)
     age = Column("age", Integer, nullable=False)
     symptoms = Column("symptoms", Text, nullable=False)
     pain_level = Column("pain_level", Integer, nullable=False)   
@@ -27,8 +28,9 @@ class Patient(Base):
     status = Column("status", Enum("aguardando", "em atendimento", "atendido", name="patient_status_enum"), nullable=False)
     created_at = Column("created_at", DateTime, nullable=False)
 
-    def __init__ (self, full_name, age, symptoms, pain_level, urgency_level, priority_number, status, created_at):
+    def __init__ (self, full_name, email, age, symptoms, pain_level, urgency_level, priority_number, status, created_at):
         self.full_name = full_name
+        self.email = email
         self.age = age
         self.symptoms = symptoms
         self.pain_level = pain_level

@@ -41,6 +41,7 @@ async def register_patient(patient_input: PatientInput, session: Session = Depen
     # Step 4: Save patient to database
     new_patient = Patient(
         full_name=patient_input.full_name,
+        email=patient_input.email,
         age=patient_input.age,
         symptoms=patient_input.symptoms,
         pain_level=patient_input.pain_level,
@@ -111,5 +112,6 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     return PatientQueueInfo(
         patient=patient,
         queue_position=queue_position,
-        waiting_time_minutes=waiting_time
+        waiting_time_minutes=waiting_time,
+        priority_number=patient.priority_number
     )  
