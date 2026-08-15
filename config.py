@@ -16,6 +16,8 @@ DOCTOR_PASSWORD = os.getenv("DOCTOR_PASSWORD")
 # Gemini AI API key for triage analysis
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+
 # OAuth2 scheme — defines the login endpoint for token generation
 # Used by FastAPI to display the Authorize button in Swagger docs
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="doctor/login-form")

@@ -9,7 +9,6 @@ from config import GEMINI_API_KEY
 # Initialize Gemini client once at module level
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-
 class TriageResponse(BaseModel):
     urgency_level: Literal["baixa", "média", "alta"] = Field(
         description="Nível de urgência estrito."

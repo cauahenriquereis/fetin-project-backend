@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from models import Patient
 from schemas import PatientOutput, StatusUpdate
 from typing import List
+from email_service import send_queue_update_email
 
 def calculate_queue_info(patient: Patient, session: Session):
     patients_ahead_high = session.query(Patient).filter(
@@ -92,8 +93,7 @@ async def update_patient_status(patient_id: int, dados: StatusUpdate, session :S
 
         for p in waiting_patients_with_email:
             queue_position, waiting_time = calculate_queue_info(p, session)
-            print(f"Paciente: {p.full_name} | Email: {p.email} | Posição: {queue_position} | Tempo: {waiting_time} min")
-    
+            send_queue_update_email(p.full_name, p.email, queue_position, waiting_time)
     return patient
 
 @queue_router.delete("/{patient_id}")
