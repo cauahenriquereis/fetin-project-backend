@@ -6,6 +6,43 @@ from models import Patient
 from schemas import PatientOutput, StatusUpdate
 from typing import List
 
+def calculate_queue_info(patient: Patient, session: Session):
+    patients_ahead_high = session.query(Patient).filter(
+        Patient.status == "aguardando",
+        Patient.urgency_level == "alta",
+        Patient.priority_number < patient.priority_number
+    ).count()
+
+    patients_ahead_medium = session.query(Patient).filter(
+        Patient.status == "aguardando",
+        Patient.urgency_level == "média",
+        Patient.priority_number < patient.priority_number
+    ).count()
+    patients_ahead_medium2 = patients_ahead_medium + patients_ahead_high
+
+    patients_ahead_low = session.query(Patient).filter(
+        Patient.status == "aguardando",
+        Patient.urgency_level == "baixa",
+        Patient.priority_number < patient.priority_number
+    ).count()
+    patients_ahead_low2 = patients_ahead_low + patients_ahead_medium2
+
+    if patient.priority_number < 199:
+        queue_position = patients_ahead_high + 1
+    elif 200 <= patient.priority_number < 299:
+        queue_position = patients_ahead_medium2 + 1
+    else:
+        queue_position = patients_ahead_low2 + 1
+
+    if patient.priority_number < 199:
+        waiting_time = patients_ahead_high * 10
+    elif 200 <= patient.priority_number < 299:
+        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7)
+    else:
+        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7) + (patients_ahead_low * 5)
+
+    return queue_position, waiting_time
+
 # All routes require a valid JWT token — doctor access only
 queue_router = APIRouter(prefix="/queue", tags = ["queue"], dependencies=[Depends(verify_token)])
 
@@ -46,6 +83,17 @@ async def update_patient_status(patient_id: int, dados: StatusUpdate, session :S
     patient.status = dados.new_status
     session.commit()
     session.refresh(patient)
+
+    if dados.new_status == "atendido":
+        waiting_patients_with_email = session.query(Patient).filter(
+        Patient.status == "aguardando",
+        Patient.email != None
+        ).all()
+
+        for p in waiting_patients_with_email:
+            queue_position, waiting_time = calculate_queue_info(p, session)
+            print(f"Paciente: {p.full_name} | Email: {p.email} | Posição: {queue_position} | Tempo: {waiting_time} min")
+    
     return patient
 
 @queue_router.delete("/{patient_id}")

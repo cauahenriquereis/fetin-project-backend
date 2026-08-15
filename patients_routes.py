@@ -5,6 +5,7 @@ from schemas import PatientInput, PatientOutput, PatientQueueInfo
 from sqlalchemy.orm import Session
 from datetime import datetime
 from gemini_service import symptoms_analyze
+from queue_routes import calculate_queue_info
 
 # Public router — no authentication required (accessed by patients at the totem)
 patient_router = APIRouter(prefix="/patients", tags = ["patients"])
@@ -62,53 +63,15 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
     if not patient:
         raise HTTPException(status_code=404, detail="Paciente não encontrado")
     
-    # Count patients ahead by urgency level (only "aguardando" status)
-    # Each group only counts patients with lower priority_number (arrived before)
-    patients_ahead_high = session.query(Patient).filter(
-    Patient.status == "aguardando",
-    Patient.urgency_level == "alta",
-    Patient.priority_number < patient.priority_number
-    ).count()
-
-    patients_ahead_medium = session.query(Patient).filter(
-    Patient.status == "aguardando",
-    Patient.urgency_level == "média",
-    Patient.priority_number < patient.priority_number
-    ).count()
-    # Medium includes all "alta" patients ahead
-    patients_ahead_medium2 = patients_ahead_medium + patients_ahead_high
-
-    patients_ahead_low = session.query(Patient).filter(
-    Patient.status == "aguardando",
-    Patient.urgency_level == "baixa",
-    Patient.priority_number < patient.priority_number
-    ).count()
-    # Low includes all "alta" and "média" patients ahead
-    patients_ahead_low2 = patients_ahead_low + patients_ahead_medium2
-
-    # Calculate estimated waiting time based on urgency level
-    # alta: 10 min/patient | média: 7 min/patient | baixa: 5 min/patient
-    if(patient.priority_number < 199):
-        waiting_time = (patients_ahead_high * 10)
-    elif(200 <= patient.priority_number < 299):
-        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7)
-    else:
-        waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7) + (patients_ahead_low * 5)  
-
-    # Determine queue position based on urgency level
-    if (patient.priority_number < 199):
-        queue_position = patients_ahead_high + 1
-    elif (200 <= patient.priority_number < 299):
-        queue_position = patients_ahead_medium2 + 1
-    else:
-        queue_position = patients_ahead_low2 + 1 
-
     if patient.status != "aguardando":
         raise HTTPException(
         status_code=400,
         detail=f"Paciente não está na fila. Status atual: {patient.status}"
     )
 
+    # Calculate queue position and waiting time
+    queue_position, waiting_time = calculate_queue_info(patient, session)
+    
     return PatientQueueInfo(
         patient=patient,
         queue_position=queue_position,
