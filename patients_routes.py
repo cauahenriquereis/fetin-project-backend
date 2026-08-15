@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from gemini_service import symptoms_analyze
 from queue_routes import calculate_queue_info
+from email_service import send_queue_update_email
 
 # Public router — no authentication required (accessed by patients at the totem)
 patient_router = APIRouter(prefix="/patients", tags = ["patients"])
@@ -55,6 +56,11 @@ async def register_patient(patient_input: PatientInput, session: Session = Depen
     session.add(new_patient)
     session.commit()
     session.refresh(new_patient) 
+
+    if new_patient.email:
+        queue_position, waiting_time = calculate_queue_info(new_patient, session)
+        send_queue_update_email(new_patient.full_name, new_patient.email, queue_position, waiting_time)
+
     return new_patient
 
 @patient_router.get("/{patient_id}", response_model = PatientQueueInfo)
