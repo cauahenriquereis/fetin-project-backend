@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Literal
 from datetime import datetime
 
@@ -29,6 +29,11 @@ class PatientQueueInfo(BaseModel):
     queue_position: int
     waiting_time_minutes: int   
     priority_number: int     
+
+class TriageResponse(BaseModel):
+    urgency_level: Literal["baixa", "média", "alta"] = Field(
+        description="Nível de urgência estrito."
+    )
 
 class LoginRequest(BaseModel):
     senha: str   

@@ -5,17 +5,9 @@ from typing import Literal
 from google import genai
 from google.genai import types, errors as genai_errors
 from config import GEMINI_API_KEY
+from schemas import TriageResponse
 
-# Initialize Gemini client once at module level
 client = genai.Client(api_key=GEMINI_API_KEY)
-
-class TriageResponse(BaseModel):
-    urgency_level: Literal["baixa", "média", "alta"] = Field(
-        description="Nível de urgência estrito."
-    )
-    reasoning: str = Field(
-        description="Explicação clínica direta, técnica e em terceira pessoa (máx. 2 frases)."
-    )
 
 def symptoms_analyze(symptoms: str, pain_level: int, age: int) -> dict:
     system_instruction = """Você é a IA médica de triagem do sistema hospitalar FETIN, atuando com base em diretrizes rigorosas (semelhantes ao Protocolo de Manchester adaptado para 3 níveis). Sua função é classificar pacientes de forma segura e analítica, focando no risco de morbimortalidade.
@@ -58,12 +50,12 @@ DADOS DO PACIENTE:
             if tentativa < max_tentativas:
                 time.sleep(2) 
             else:
-                return {"urgency_level": "média", "reasoning": "Serviço temporariamente indisponível", "ai_analyzed": False}
+                return {"urgency_level": "média", "ai_analyzed": False}
 
         except genai_errors.ClientError as e:
             print(f"Erro na API do Gemini (Client/Auth): {e}")
-            return {"urgency_level": "média", "reasoning": "Erro na análise automática (Client)", "ai_analyzed": False}
+            return {"urgency_level": "média", "ai_analyzed": False}
 
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Erro no processamento da resposta da IA: {e}")
-            return {"urgency_level": "média", "reasoning": "Erro na formatação ou conteúdo bloqueado", "ai_analyzed": False}
+            return {"urgency_level": "média", "ai_analyzed": False}
