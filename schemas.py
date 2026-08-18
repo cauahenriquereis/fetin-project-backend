@@ -21,7 +21,6 @@ class PatientOutput(BaseModel):
     status: str
     created_at: datetime
 
-    # Allows Pydantic to read objects returned by SQLAlchemy.
     class Config:
         from_attributes = True
 
@@ -31,10 +30,8 @@ class PatientQueueInfo(BaseModel):
     waiting_time_minutes: int   
     priority_number: int     
 
-        
 class LoginRequest(BaseModel):
     senha: str   
 
 class StatusUpdate(BaseModel):
-    # Only accepts valid status values
     new_status: Literal["aguardando", "em atendimento", "atendido"]

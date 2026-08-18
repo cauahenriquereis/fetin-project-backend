@@ -8,7 +8,6 @@ db = create_engine(DATABASE_URL,  pool_pre_ping=True)
 
 Base = declarative_base()
 
-
 class Patient(Base):
     __tablename__ = "patients"
 
@@ -34,5 +33,4 @@ class Patient(Base):
         self.status = status
         self.created_at = created_at
 
-# Create tables if they don't exist
 Base.metadata.create_all(db)
