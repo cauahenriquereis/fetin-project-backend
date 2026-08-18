@@ -4,14 +4,10 @@ from dotenv import load_dotenv
 from config import DATABASE_URL
 import os
 
-# Creates the connection engine to the Neon PostgreSQL database
-# pool_pre_ping=True checks if connection is alive before using it
-db = create_engine(os.getenv("DATABASE_URL"),  pool_pre_ping=True)
+db = create_engine(DATABASE_URL,  pool_pre_ping=True)
 
-#create the base of the database
 Base = declarative_base()
 
-#create the classes/tables of the database
 
 class Patient(Base):
     __tablename__ = "patients"
