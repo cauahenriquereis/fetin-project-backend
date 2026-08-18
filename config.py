@@ -4,16 +4,14 @@ from fastapi.security import OAuth2PasswordBearer
 
 load_dotenv()
 
-# JWT signing algorithm (HS256)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 ALGORITHM = os.getenv("ALGORITHM")
 
-# Token expiration time — converted to int because os.getenv always returns string
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
-# Shared doctor password for authentication
 DOCTOR_PASSWORD = os.getenv("DOCTOR_PASSWORD")
 
-# Gemini AI API key for triage analysis
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")

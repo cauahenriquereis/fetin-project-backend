@@ -1,9 +1,8 @@
 from sqlalchemy import create_engine, Column,String,Integer,DateTime, Enum, Text, ForeignKey
 from sqlalchemy.orm import declarative_base
 from dotenv import load_dotenv
+from config import DATABASE_URL
 import os
-
-load_dotenv()
 
 # Creates the connection engine to the Neon PostgreSQL database
 # pool_pre_ping=True checks if connection is alive before using it
