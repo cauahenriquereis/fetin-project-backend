@@ -15,7 +15,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://fetin-project-frontend.vercel.app",
+        "https://fetin-triagem-ia.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
