@@ -27,7 +27,7 @@ DADOS DO PACIENTE:
 """
 
     max_tentativas = 3
-    for tentativa in range(1, max_tentativas + 1):
+    for tentativa in range(max_tentativas):
         try:
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
@@ -41,21 +41,17 @@ DADOS DO PACIENTE:
             )
 
             resultado = json.loads(response.text)
-            resultado["ai_analyzed"] = True
             
             return resultado
 
         except genai_errors.ServerError as e:
-            print(f"Tentativa {tentativa}/{max_tentativas} falhou por erro de servidor: {e}")
             if tentativa < max_tentativas:
                 time.sleep(2) 
             else:
-                return {"urgency_level": "média", "ai_analyzed": False}
+                return {"urgency_level": "média"}
 
         except genai_errors.ClientError as e:
-            print(f"Erro na API do Gemini (Client/Auth): {e}")
-            return {"urgency_level": "média", "ai_analyzed": False}
+            return {"urgency_level": "média"}
 
         except (json.JSONDecodeError, ValueError) as e:
-            print(f"Erro no processamento da resposta da IA: {e}")
-            return {"urgency_level": "média", "ai_analyzed": False}
+            return {"urgency_level": "média"}
