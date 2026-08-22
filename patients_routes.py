@@ -8,7 +8,6 @@ from gemini_service import symptoms_analyze
 from queue_routes import calculate_queue_info
 from email_service import send_queue_update_email
 
-# Public router — no authentication required (accessed by patients at the totem)
 patient_router = APIRouter(prefix="/patients", tags = ["patients"])
 
 @patient_router.get("/")
@@ -19,7 +18,7 @@ async def home():
 async def register_patient(patient_input: PatientInput, session: Session = Depends(pegar_sessao)):
 
     # Step 1: Analyze symptoms with Gemini AI
-    analyze = symptoms_analyze(patient_input.symptoms, patient_input.pain_level, patient_input.age)
+    analyze = await symptoms_analyze(patient_input.symptoms, patient_input.pain_level, patient_input.age)
     urgency_level = analyze["urgency_level"]
 
     # Step 2: Map urgency level to numeric weight (lower = higher priority)

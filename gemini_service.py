@@ -1,7 +1,5 @@
+import asyncio
 import json
-import time
-from pydantic import BaseModel, Field
-from typing import Literal
 from google import genai
 from google.genai import types, errors as genai_errors
 from config import GEMINI_API_KEY
@@ -9,7 +7,7 @@ from schemas import TriageResponse
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-def symptoms_analyze(symptoms: str, pain_level: int, age: int) -> dict:
+async def symptoms_analyze(symptoms: str, pain_level: int, age: int) -> dict:
     system_instruction = """Você é a IA médica de triagem do sistema hospitalar FETIN, atuando com base em diretrizes rigorosas (semelhantes ao Protocolo de Manchester adaptado para 3 níveis). Sua função é classificar pacientes de forma segura e analítica, focando no risco de morbimortalidade.
 
 DIRETRIZES DE TRIAGEM CLÍNICA:
@@ -29,7 +27,7 @@ DADOS DO PACIENTE:
     max_tentativas = 3
     for tentativa in range(max_tentativas):
         try:
-            response = client.models.generate_content(
+            response = await client.aio.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=user_prompt,
                 config=types.GenerateContentConfig(
@@ -45,8 +43,8 @@ DADOS DO PACIENTE:
             return resultado
 
         except genai_errors.ServerError as e:
-            if tentativa < max_tentativas:
-                time.sleep(2) 
+            if tentativa < max_tentativas - 1:
+                await asyncio.sleep(2)
             else:
                 return {"urgency_level": "média"}
 
