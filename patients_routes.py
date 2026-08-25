@@ -29,7 +29,10 @@ async def register_patient(patient_input: PatientInput, session: Session = Depen
     ).order_by(Patient.priority_number.desc()).first()
 
     if last_patient:
-        priority_number = last_patient.priority_number + 1
+        if last_patient.priority_number == 199 or last_patient.priority_number == 299:
+            priority_number = urgency_weight * 100
+        else:    
+            priority_number = last_patient.priority_number + 1
     else:
         priority_number = urgency_weight * 100
 

@@ -28,16 +28,16 @@ def calculate_queue_info(patient: Patient, session: Session):
     ).count()
     patients_ahead_low2 = patients_ahead_low + patients_ahead_medium2
 
-    if patient.priority_number < 199:
+    if patient.priority_number <= 199:
         queue_position = patients_ahead_high + 1
-    elif 200 <= patient.priority_number < 299:
+    elif 200 <= patient.priority_number <= 299:
         queue_position = patients_ahead_medium2 + 1
     else:
         queue_position = patients_ahead_low2 + 1
 
-    if patient.priority_number < 199:
+    if patient.priority_number <= 199:
         waiting_time = patients_ahead_high * 10
-    elif 200 <= patient.priority_number < 299:
+    elif 200 <= patient.priority_number <= 299:
         waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7)
     else:
         waiting_time = (patients_ahead_high * 10) + (patients_ahead_medium * 7) + (patients_ahead_low * 5)
