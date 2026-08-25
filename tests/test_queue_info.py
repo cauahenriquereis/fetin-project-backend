@@ -56,3 +56,37 @@ def test_calculate_queue_info_boundary_medium_urgency(mock_session):
 
     assert queue_position == 9
     assert waiting_time == 71 
+
+def test_calculate_queue_info_with_patients_ahead_high(mock_session):
+    mock_session.query.return_value.filter.return_value.count.side_effect = [3, 0, 0]
+
+    patient = MagicMock()
+    patient.priority_number = 150
+
+    queue_position, waiting_time = calculate_queue_info(patient, mock_session)
+
+    assert queue_position == 4
+    assert waiting_time == 30   
+
+def test_calculate_queue_info_with_patients_ahead_medium(mock_session):
+    mock_session.query.return_value.filter.return_value.count.side_effect = [3, 4, 0]
+
+    patient = MagicMock()
+    patient.priority_number = 250
+
+    queue_position, waiting_time = calculate_queue_info(patient, mock_session)
+
+    assert queue_position == 8
+    assert waiting_time == 58
+
+def test_calculate_queue_info_with_patients_ahead_low(mock_session):
+    mock_session.query.return_value.filter.return_value.count.side_effect = [3, 4, 7]
+
+    patient = MagicMock()
+    patient.priority_number = 350
+
+    queue_position, waiting_time = calculate_queue_info(patient, mock_session)
+
+    assert queue_position == 15
+    assert waiting_time == 93
+     
