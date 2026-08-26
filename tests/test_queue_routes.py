@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock
-
+from datetime import datetime
 
 def test_get_ordered_queue_returns_empty_list(client, mock_session):
     mock_session.query.return_value.filter.return_value.order_by.return_value.all.return_value = []
@@ -9,9 +9,7 @@ def test_get_ordered_queue_returns_empty_list(client, mock_session):
     assert response.status_code == 200
     assert response.json() == []
 
-from datetime import datetime
-
-def test_get_ordered_queue_returns_patients(client, mock_session):
+def test_get_ordered_queue_returns_single_patient(client, mock_session):
     mock_patient = MagicMock()
     mock_patient.id = 1
     mock_patient.full_name = "John Doe"
@@ -41,6 +39,84 @@ def test_get_ordered_queue_returns_patients(client, mock_session):
         "status": "aguardando",
         "created_at": "2026-08-25T10:00:00"
     }]   
+
+
+def test_get_ordered_queue_returns_multiple_patients(client, mock_session):
+    mock_patient_alta = MagicMock()
+    mock_patient_alta.id = 1
+    mock_patient_alta.full_name = "John Doe"
+    mock_patient_alta.email = "john@example.com"
+    mock_patient_alta.age = 30
+    mock_patient_alta.symptoms = "dor no peito"
+    mock_patient_alta.pain_level = 7
+    mock_patient_alta.urgency_level = "alta"
+    mock_patient_alta.priority_number = 100
+    mock_patient_alta.status = "aguardando"
+    mock_patient_alta.created_at = datetime(2026, 8, 25, 10, 0, 0)
+
+    mock_patient_media = MagicMock()
+    mock_patient_media.id = 2
+    mock_patient_media.full_name = "Jane Smith"
+    mock_patient_media.email = "jane@example.com"
+    mock_patient_media.age = 25
+    mock_patient_media.symptoms = "dor de cabeça"
+    mock_patient_media.pain_level = 5
+    mock_patient_media.urgency_level = "média"
+    mock_patient_media.priority_number = 200
+    mock_patient_media.status = "aguardando"
+    mock_patient_media.created_at = datetime(2026, 8, 25, 11, 0, 0)
+
+    mock_patient_baixa = MagicMock()
+    mock_patient_baixa.id = 3
+    mock_patient_baixa.full_name = "Carlos Lima"
+    mock_patient_baixa.email = "carlos@example.com"
+    mock_patient_baixa.age = 40
+    mock_patient_baixa.symptoms = "dor muscular leve"
+    mock_patient_baixa.pain_level = 2
+    mock_patient_baixa.urgency_level = "baixa"
+    mock_patient_baixa.priority_number = 300
+    mock_patient_baixa.status = "aguardando"
+    mock_patient_baixa.created_at = datetime(2026, 8, 25, 12, 0, 0)
+
+    mock_session.query.return_value.filter.return_value.order_by.return_value.all.return_value = [mock_patient_alta, mock_patient_media, mock_patient_baixa]
+
+    response = client.get("/queue/status")
+
+    assert response.status_code == 200
+    assert response.json() == [{
+        "id": 1,
+        "full_name": "John Doe",
+        "email": "john@example.com",
+        "age": 30,
+        "symptoms": "dor no peito",
+        "pain_level": 7,
+        "urgency_level": "alta",
+        "priority_number": 100,
+        "status": "aguardando",
+        "created_at": "2026-08-25T10:00:00"
+    }, {
+        "id": 2,
+        "full_name": "Jane Smith",
+        "email": "jane@example.com",
+        "age": 25,
+        "symptoms": "dor de cabeça",
+        "pain_level": 5,
+        "urgency_level": "média",
+        "priority_number": 200,
+        "status": "aguardando",
+        "created_at": "2026-08-25T11:00:00"
+    }, {
+        "id": 3,
+        "full_name": "Carlos Lima",
+        "email": "carlos@example.com",
+        "age": 40,
+        "symptoms": "dor muscular leve",
+        "pain_level": 2,
+        "urgency_level": "baixa",
+        "priority_number": 300,
+        "status": "aguardando",
+        "created_at": "2026-08-25T12:00:00"
+    }]     
 
 def test_get_next_patient_returns_patient(client, mock_session):
     mock_patient = MagicMock()
@@ -72,3 +148,74 @@ def test_get_next_patient_returns_patient(client, mock_session):
         "status": "aguardando",
         "created_at": "2026-08-25T10:00:00"
         }
+    
+def test_get_next_patient_returns_404(client, mock_session):
+
+    mock_session.query.return_value.filter.return_value.order_by.return_value.first.return_value = None
+
+    response = client.get("/queue/next/")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Não há pacientes aguardando atendimento"}
+
+def test_get_patient_status_returns_patient(client, mock_session):
+    mock_patient = MagicMock()
+    mock_patient.id = 1
+    mock_patient.full_name = "John Doe"
+    mock_patient.email = "john@example.com"
+    mock_patient.age = 30
+    mock_patient.symptoms = "dor no peito"
+    mock_patient.pain_level = 7
+    mock_patient.urgency_level = "alta"
+    mock_patient.priority_number = 100
+    mock_patient.status = "aguardando"
+    mock_patient.created_at = datetime(2026, 8, 25, 10, 0, 0)
+
+    mock_session.query.return_value.filter.return_value.first.return_value = mock_patient
+
+    response = client.get("/queue/status/1")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": 1,
+        "full_name": "John Doe",
+        "email": "john@example.com",
+        "age": 30,
+        "symptoms": "dor no peito",
+        "pain_level": 7,
+        "urgency_level": "alta",
+        "priority_number": 100,
+        "status": "aguardando",
+        "created_at": "2026-08-25T10:00:00"
+    }
+
+def test_get_patient_status_returns_404(client, mock_session):
+    mock_session.query.return_value.filter.return_value.first.return_value = None
+
+    response = client.get("/queue/status/999")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Paciente não encontrado"}    
+
+def test_remove_patient_from_queue(client, mock_session):
+    mock_patient = MagicMock()
+    mock_patient.id = 1
+    mock_patient.full_name = "John Doe"
+
+    mock_session.query.return_value.filter.return_value.first.return_value = mock_patient
+
+    response = client.delete("/queue/1")
+
+    assert response.status_code == 200
+    assert response.json() == {"mensagem": f"Paciente {mock_patient.full_name} removido da fila"}
+
+    mock_session.delete.assert_called_once_with(mock_patient)
+    mock_session.commit.assert_called_once()
+
+def test_remove_patient_from_queue_returns_404(client, mock_session):
+    mock_session.query.return_value.filter.return_value.first.return_value = None
+
+    response = client.delete("/queue/999")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Paciente não encontrado"}

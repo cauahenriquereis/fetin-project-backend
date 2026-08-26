@@ -100,3 +100,5 @@ async def remove_patient_from_queue(patient_id: int, session :Session = Depends(
     session.delete(patient)
     session.commit()
     return {"mensagem": f"Paciente {patient.full_name} removido da fila"}
+
+    
