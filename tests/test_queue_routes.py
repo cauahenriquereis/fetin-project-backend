@@ -307,26 +307,28 @@ def test_update_patient_status_atendido(client, mock_session):
     mock_session.query.return_value.filter.return_value.first.return_value = mock_patient
     mock_session.query.return_value.filter.return_value.all.return_value = [mock_patient_com_email]
 
-    response = client.patch("/queue/1/status", json={"new_status": "atendido"}) 
+    try:
+        response = client.patch("/queue/1/status", json={"new_status": "atendido"}) 
 
-    assert response.status_code == 200
-    assert response.json() == {
-        "id": 1,
-        "full_name": "John Doe",
-        "email": "john@example.com",
-        "age": 30,
-        "symptoms": "dor no peito",
-        "pain_level": 7,
-        "urgency_level": "alta",
-        "priority_number": 100,
-        "status": "atendido",
-        "created_at": "2026-08-25T10:00:00"
-        }    
-    mock_session.commit.assert_called_once()
-    mock_session.refresh.assert_called_once_with(mock_patient)    
-     
-    mock_calc.assert_called_once_with(mock_patient_com_email, mock_session)
-    mock_email.assert_called_once_with("Maria Silva", "maria@example.com", 2, 15)
+        assert response.status_code == 200
+        assert response.json() == {
+            "id": 1,
+            "full_name": "John Doe",
+            "email": "john@example.com",
+            "age": 30,
+            "symptoms": "dor no peito",
+            "pain_level": 7,
+            "urgency_level": "alta",
+            "priority_number": 100,
+            "status": "atendido",
+            "created_at": "2026-08-25T10:00:00"
+            }    
+        mock_session.commit.assert_called_once()
+        mock_session.refresh.assert_called_once_with(mock_patient)    
+        
+        mock_calc.assert_called_once_with(mock_patient_com_email, mock_session)
+        mock_email.assert_called_once_with("Maria Silva", "maria@example.com", 2, 15)
 
-    app.dependency_overrides.pop(get_calc_fn)
-    app.dependency_overrides.pop(get_email_fn)
+    finally:
+        app.dependency_overrides.pop(get_calc_fn)
+        app.dependency_overrides.pop(get_email_fn)
