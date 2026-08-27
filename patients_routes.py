@@ -7,6 +7,7 @@ from datetime import datetime
 from gemini_service import symptoms_analyze
 from queue_routes import calculate_queue_info
 from email_service import send_queue_update_email
+from queue_routes import get_calc_fn
 
 patient_router = APIRouter(prefix="/patients", tags = ["patients"])
 
@@ -59,7 +60,11 @@ async def register_patient(patient_input: PatientInput, session: Session = Depen
     return new_patient
 
 @patient_router.get("/{patient_id}", response_model = PatientQueueInfo)
-async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao)):
+async def get_patient(
+    patient_id: int, 
+    session: Session = Depends(pegar_sessao),
+    calc_fn = Depends(get_calc_fn),
+    ):
     patient = session.query(Patient).filter(Patient.id == patient_id).first()
     if not patient:
         raise HTTPException(status_code=404, detail="Paciente não encontrado")
@@ -70,7 +75,7 @@ async def get_patient(patient_id: int, session: Session = Depends(pegar_sessao))
         detail=f"Paciente não está na fila. Status atual: {patient.status}"
     )
 
-    queue_position, waiting_time = calculate_queue_info(patient, session)
+    queue_position, waiting_time = calc_fn(patient, session)
     
     return PatientQueueInfo(
         patient=patient,
