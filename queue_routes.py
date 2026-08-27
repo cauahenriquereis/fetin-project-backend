@@ -7,6 +7,12 @@ from schemas import PatientOutput, StatusUpdate
 from typing import List
 from email_service import send_queue_update_email
 
+def get_calc_fn():
+    return calculate_queue_info
+
+def get_email_fn():
+    return send_queue_update_email
+
 def calculate_queue_info(patient: Patient, session: Session):
     patients_ahead_high = session.query(Patient).filter(
         Patient.status == "aguardando",
@@ -71,7 +77,13 @@ async def get_patient_status(patient_id: int, session :Session = Depends(pegar_s
     return patient
 
 @queue_router.patch("/{patient_id}/status", response_model = PatientOutput)
-async def update_patient_status(patient_id: int, dados: StatusUpdate, session :Session = Depends(pegar_sessao)):
+async def update_patient_status(
+    patient_id: int,
+    dados: StatusUpdate,
+    session: Session = Depends(pegar_sessao),
+    calc_fn=Depends(get_calc_fn),
+    email_fn=Depends(get_email_fn),
+):
     patient = session.query(Patient).filter(Patient.id == patient_id).first()
     if not patient:
         raise HTTPException(status_code=404, detail="Paciente não encontrado")
@@ -86,8 +98,8 @@ async def update_patient_status(patient_id: int, dados: StatusUpdate, session :S
         ).all()
 
         for p in waiting_patients_with_email:
-            queue_position, waiting_time = calculate_queue_info(p, session)
-            send_queue_update_email(p.full_name, p.email, queue_position, waiting_time)
+            queue_position, waiting_time = calc_fn(p, session)
+            email_fn(p.full_name, p.email, queue_position, waiting_time)
     return patient
 
 @queue_router.delete("/{patient_id}")
