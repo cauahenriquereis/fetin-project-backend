@@ -75,8 +75,6 @@ async def update_patient_status(patient_id: int, dados: StatusUpdate, session :S
     patient = session.query(Patient).filter(Patient.id == patient_id).first()
     if not patient:
         raise HTTPException(status_code=404, detail="Paciente não encontrado")
-    if dados.new_status not in ["aguardando", "em atendimento", "atendido"]:
-        raise HTTPException(status_code=400, detail="Status inválido, aceito apenas 'aguardando', 'em atendimento' ou 'atendido'")
     patient.status = dados.new_status
     session.commit()
     session.refresh(patient)
