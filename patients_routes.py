@@ -5,9 +5,10 @@ from schemas import PatientInput, PatientOutput, PatientQueueInfo
 from sqlalchemy.orm import Session
 from datetime import datetime
 from gemini_service import symptoms_analyze
-from queue_routes import calculate_queue_info
-from email_service import send_queue_update_email
-from queue_routes import get_calc_fn
+from queue_routes import get_calc_fn, get_email_fn
+
+def get_symptoms_analyze_fn():
+    return symptoms_analyze
 
 patient_router = APIRouter(prefix="/patients", tags = ["patients"])
 
@@ -16,9 +17,15 @@ async def home():
     return{"mensagem": "Você acessou a rota padrão de pacientes", "autenticado":False}
 
 @patient_router.post("/register", response_model = PatientOutput)
-async def register_patient(patient_input: PatientInput, session: Session = Depends(pegar_sessao)):
+async def register_patient(
+    patient_input: PatientInput, 
+    session: Session = Depends(pegar_sessao),
+    symptoms_analyze_fn = Depends(get_symptoms_analyze_fn),
+    calc_fn = Depends(get_calc_fn),
+    email_fn = Depends(get_email_fn),
+    ):
 
-    analyze = await symptoms_analyze(patient_input.symptoms, patient_input.pain_level, patient_input.age)
+    analyze = await symptoms_analyze_fn(patient_input.symptoms, patient_input.pain_level, patient_input.age)
     urgency_level = analyze["urgency_level"]
 
     urgency_order = {"alta": 1, "média": 2, "baixa": 3}
@@ -54,8 +61,8 @@ async def register_patient(patient_input: PatientInput, session: Session = Depen
     session.refresh(new_patient) 
 
     if new_patient.email:
-        queue_position, waiting_time = calculate_queue_info(new_patient, session)
-        send_queue_update_email(new_patient.full_name, new_patient.email, queue_position, waiting_time)
+        queue_position, waiting_time = calc_fn(new_patient, session)
+        email_fn(new_patient.full_name, new_patient.email, queue_position, waiting_time)
 
     return new_patient
 
