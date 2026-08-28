@@ -4,7 +4,7 @@ from datetime import datetime
 
 class PatientInput(BaseModel):
    full_name: str
-   email: str
+   email: str | None = None
    age: int
    symptoms: str
    pain_level: int
@@ -12,7 +12,7 @@ class PatientInput(BaseModel):
 class PatientOutput(BaseModel):
     id: int
     full_name: str
-    email: str
+    email: str | None = None
     age: int
     symptoms: str
     pain_level: int
