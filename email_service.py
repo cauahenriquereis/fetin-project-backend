@@ -1,7 +1,10 @@
 import resend
+import logging
 from config import RESEND_API_KEY
 
 resend.api_key = RESEND_API_KEY
+
+logger = logging.getLogger(__name__)
 
 def send_queue_update_email(patient_name: str, patient_email: str, queue_position: int, waiting_time: int):
     try:
@@ -24,4 +27,4 @@ def send_queue_update_email(patient_name: str, patient_email: str, queue_positio
             """
         })
     except Exception as e:
-        print(f"Erro ao enviar email para {patient_email}: {e}")
+        logger.error(f"Erro ao enviar email para {patient_email}: {e}")
