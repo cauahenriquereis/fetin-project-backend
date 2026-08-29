@@ -1,5 +1,6 @@
 import asyncio
 import json
+from typing import Optional
 from google import genai
 from google.genai import types, errors as genai_errors
 from config import GEMINI_API_KEY
@@ -11,11 +12,11 @@ async def symptoms_analyze(
     symptoms: str, 
     pain_level: int, 
     age: int, 
-    temperature: float, 
-    systolic_pressure: int, 
-    diastolic_pressure: int, 
-    heart_rate: int, 
-    oxygen_saturation: int
+    temperature: Optional[float] = None, 
+    systolic_pressure: Optional[int] = None, 
+    diastolic_pressure: Optional[int] = None, 
+    heart_rate: Optional[int] = None, 
+    oxygen_saturation: Optional[int] = None
 ) -> dict:
     
     system_instruction = """Você é a IA médica de triagem do sistema hospitalar FETIN, atuando com base em diretrizes rigorosas (semelhantes ao Protocolo de Manchester adaptado para 3 níveis de gravidade: Alta, Média e Baixa). Sua função é classificar pacientes de forma segura e analítica, focando no risco de morbimortalidade e na estabilidade hemodinâmica.
@@ -49,17 +50,27 @@ DIRETRIZES DE TRIAGEM CLÍNICA:
 
 6. Critérios para Urgência BAIXA (Verde/Azul adaptado):
    - Condições crônicas agudizadas sem gravidade, quadros não-urgentes ou queixas leves com sinais vitais dentro da normalidade.
-   - Exemplos: Sintomas de vias aéreas superiores (coriza, dor de garganta leve), dores musculares sem trauma, renovação de receitas, trocas de curativo, dores crônicas sem alteração de padrão."""
+   - Exemplos: Sintomas de vias aéreas superiores (coriza, dor de garganta leve), dores musculares sem trauma, renovação de receitas, trocas de curativo, dores crônicas sem alteração de padrão.
+
+7. Sinais Vitais Ausentes (Equipamento Indisponível): Nem sempre o hospital terá o equipamento disponível no momento da triagem. Quando um ou mais sinais vitais estiverem marcados como "Não informado", você NÃO deve presumir que estão normais — trate a ausência como uma informação incompleta, não como um dado tranquilizador. Nesses casos:
+   - Baseie a classificação prioritariamente nos sintomas relatados, no nível de dor e na idade do paciente.
+   - Na dúvida entre dois níveis de urgência por falta de sinais vitais objetivos, incline-se para o nível mais grave dos dois (erre para o lado da cautela), especialmente se os sintomas relatados já sugerem risco (ex: dor torácica, falta de ar, sinais neurológicos).
+   - Nunca rebaixe a urgência apenas por falta de dados — a ausência de sinais vitais nunca deve, por si só, tornar a triagem mais branda do que os sintomas relatados justificam."""
+
+    def format_vital(value, unit: str = "") -> str:
+        if value is None:
+            return "Não informado"
+        return f"{value}{unit}"
 
     user_prompt = f"""
 DADOS DO PACIENTE PARA TRIAGEM:
 - Idade: {age} anos
 - Sintomas relatados: {symptoms}
 - Dor autorrelatada: {pain_level}/10
-- Temperatura Corporal: {temperature} ºC
-- Pressão Arterial: {systolic_pressure}/{diastolic_pressure} mmHg
-- Frequência Cardíaca: {heart_rate} bpm
-- Saturação de Oxigênio (SpO2): {oxygen_saturation} %
+- Temperatura Corporal: {format_vital(temperature, " ºC")}
+- Pressão Arterial: {format_vital(systolic_pressure)}/{format_vital(diastolic_pressure)} mmHg
+- Frequência Cardíaca: {format_vital(heart_rate, " bpm")}
+- Saturação de Oxigênio (SpO2): {format_vital(oxygen_saturation, " %")}
 """
 
     max_tentativas = 3
