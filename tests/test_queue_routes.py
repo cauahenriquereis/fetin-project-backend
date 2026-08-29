@@ -31,6 +31,11 @@ def test_get_ordered_queue_returns_single_patient(client, mock_session):
     mock_patient.priority_number = 100
     mock_patient.status = "aguardando"
     mock_patient.created_at = datetime(2026, 8, 25, 10, 0, 0)
+    mock_patient.temperature = 37.5
+    mock_patient.systolic_pressure = 120
+    mock_patient.diastolic_pressure = 80
+    mock_patient.heart_rate = 78
+    mock_patient.oxygen_saturation = 97
 
     mock_session.query.return_value.filter.return_value.order_by.return_value.all.return_value = [mock_patient]
 
@@ -47,7 +52,12 @@ def test_get_ordered_queue_returns_single_patient(client, mock_session):
         "urgency_level": "alta",
         "priority_number": 100,
         "status": "aguardando",
-        "created_at": "2026-08-25T10:00:00"
+        "created_at": "2026-08-25T10:00:00",
+        "temperature": 37.5,
+        "systolic_pressure": 120,
+        "diastolic_pressure": 80,
+        "heart_rate": 78,
+        "oxygen_saturation": 97
     }]   
 
 
@@ -63,6 +73,11 @@ def test_get_ordered_queue_returns_multiple_patients(client, mock_session):
     mock_patient_alta.priority_number = 100
     mock_patient_alta.status = "aguardando"
     mock_patient_alta.created_at = datetime(2026, 8, 25, 10, 0, 0)
+    mock_patient_alta.temperature = 37.5
+    mock_patient_alta.systolic_pressure = 120
+    mock_patient_alta.diastolic_pressure = 80
+    mock_patient_alta.heart_rate = 78
+    mock_patient_alta.oxygen_saturation = 97
 
     mock_patient_media = MagicMock()
     mock_patient_media.id = 2
@@ -75,6 +90,11 @@ def test_get_ordered_queue_returns_multiple_patients(client, mock_session):
     mock_patient_media.priority_number = 200
     mock_patient_media.status = "aguardando"
     mock_patient_media.created_at = datetime(2026, 8, 25, 11, 0, 0)
+    mock_patient_media.temperature = 37.0
+    mock_patient_media.systolic_pressure = 118
+    mock_patient_media.diastolic_pressure = 76
+    mock_patient_media.heart_rate = 82
+    mock_patient_media.oxygen_saturation = 98
 
     mock_patient_baixa = MagicMock()
     mock_patient_baixa.id = 3
@@ -87,6 +107,11 @@ def test_get_ordered_queue_returns_multiple_patients(client, mock_session):
     mock_patient_baixa.priority_number = 300
     mock_patient_baixa.status = "aguardando"
     mock_patient_baixa.created_at = datetime(2026, 8, 25, 12, 0, 0)
+    mock_patient_baixa.temperature = 36.8
+    mock_patient_baixa.systolic_pressure = 115
+    mock_patient_baixa.diastolic_pressure = 75
+    mock_patient_baixa.heart_rate = 70
+    mock_patient_baixa.oxygen_saturation = 99
 
     mock_session.query.return_value.filter.return_value.order_by.return_value.all.return_value = [mock_patient_alta, mock_patient_media, mock_patient_baixa]
 
@@ -103,7 +128,12 @@ def test_get_ordered_queue_returns_multiple_patients(client, mock_session):
         "urgency_level": "alta",
         "priority_number": 100,
         "status": "aguardando",
-        "created_at": "2026-08-25T10:00:00"
+        "created_at": "2026-08-25T10:00:00",
+        "temperature": 37.5,
+        "systolic_pressure": 120,
+        "diastolic_pressure": 80,
+        "heart_rate": 78,
+        "oxygen_saturation": 97
     }, {
         "id": 2,
         "full_name": "Jane Smith",
@@ -114,7 +144,12 @@ def test_get_ordered_queue_returns_multiple_patients(client, mock_session):
         "urgency_level": "média",
         "priority_number": 200,
         "status": "aguardando",
-        "created_at": "2026-08-25T11:00:00"
+        "created_at": "2026-08-25T11:00:00",
+        "temperature": 37.0,
+        "systolic_pressure": 118,
+        "diastolic_pressure": 76,
+        "heart_rate": 82,
+        "oxygen_saturation": 98
     }, {
         "id": 3,
         "full_name": "Carlos Lima",
@@ -125,7 +160,12 @@ def test_get_ordered_queue_returns_multiple_patients(client, mock_session):
         "urgency_level": "baixa",
         "priority_number": 300,
         "status": "aguardando",
-        "created_at": "2026-08-25T12:00:00"
+        "created_at": "2026-08-25T12:00:00",
+        "temperature": 36.8,
+        "systolic_pressure": 115,
+        "diastolic_pressure": 75,
+        "heart_rate": 70,
+        "oxygen_saturation": 99
     }]     
 
 def test_get_next_patient_returns_patient(client, mock_session):
@@ -140,6 +180,11 @@ def test_get_next_patient_returns_patient(client, mock_session):
     mock_patient.priority_number = 100
     mock_patient.status = "aguardando"
     mock_patient.created_at = datetime(2026, 8, 25, 10, 0, 0)
+    mock_patient.temperature = 37.5
+    mock_patient.systolic_pressure = 120
+    mock_patient.diastolic_pressure = 80
+    mock_patient.heart_rate = 78
+    mock_patient.oxygen_saturation = 97
 
     mock_session.query.return_value.filter.return_value.order_by.return_value.first.return_value = mock_patient
 
@@ -156,7 +201,12 @@ def test_get_next_patient_returns_patient(client, mock_session):
         "urgency_level": "alta",
         "priority_number": 100,
         "status": "aguardando",
-        "created_at": "2026-08-25T10:00:00"
+        "created_at": "2026-08-25T10:00:00",
+        "temperature": 37.5,
+        "systolic_pressure": 120,
+        "diastolic_pressure": 80,
+        "heart_rate": 78,
+        "oxygen_saturation": 97
         }
     
 def test_get_next_patient_returns_404(client, mock_session):
@@ -180,6 +230,11 @@ def test_get_patient_status_returns_patient(client, mock_session):
     mock_patient.priority_number = 100
     mock_patient.status = "aguardando"
     mock_patient.created_at = datetime(2026, 8, 25, 10, 0, 0)
+    mock_patient.temperature = 37.5
+    mock_patient.systolic_pressure = 120
+    mock_patient.diastolic_pressure = 80
+    mock_patient.heart_rate = 78
+    mock_patient.oxygen_saturation = 97
 
     mock_session.query.return_value.filter.return_value.first.return_value = mock_patient
 
@@ -196,7 +251,12 @@ def test_get_patient_status_returns_patient(client, mock_session):
         "urgency_level": "alta",
         "priority_number": 100,
         "status": "aguardando",
-        "created_at": "2026-08-25T10:00:00"
+        "created_at": "2026-08-25T10:00:00",
+        "temperature": 37.5,
+        "systolic_pressure": 120,
+        "diastolic_pressure": 80,
+        "heart_rate": 78,
+        "oxygen_saturation": 97
     }
 
 def test_get_patient_status_returns_404(client, mock_session):
@@ -260,6 +320,11 @@ def test_update_patient_status_em_atendimento(client, mock_session):
     mock_patient.priority_number = 100
     mock_patient.status = "aguardando"
     mock_patient.created_at = datetime(2026, 8, 25, 10, 0, 0)
+    mock_patient.temperature = 37.5
+    mock_patient.systolic_pressure = 120
+    mock_patient.diastolic_pressure = 80
+    mock_patient.heart_rate = 78
+    mock_patient.oxygen_saturation = 97
 
     mock_session.query.return_value.filter.return_value.first.return_value = mock_patient
 
@@ -276,7 +341,12 @@ def test_update_patient_status_em_atendimento(client, mock_session):
         "urgency_level": "alta",
         "priority_number": 100,
         "status": "em atendimento",
-        "created_at": "2026-08-25T10:00:00"
+        "created_at": "2026-08-25T10:00:00",
+        "temperature": 37.5,
+        "systolic_pressure": 120,
+        "diastolic_pressure": 80,
+        "heart_rate": 78,
+        "oxygen_saturation": 97
     }    
     mock_session.commit.assert_called_once()
     mock_session.refresh.assert_called_once_with(mock_patient) 
@@ -299,6 +369,11 @@ def test_update_patient_status_atendido(client, mock_session):
     mock_patient.priority_number = 100
     mock_patient.status = "aguardando"
     mock_patient.created_at = datetime(2026, 8, 25, 10, 0, 0)
+    mock_patient.temperature = 37.5
+    mock_patient.systolic_pressure = 120
+    mock_patient.diastolic_pressure = 80
+    mock_patient.heart_rate = 78
+    mock_patient.oxygen_saturation = 97
 
     mock_patient_com_email = MagicMock()
     mock_patient_com_email.full_name = "Maria Silva"
@@ -321,7 +396,12 @@ def test_update_patient_status_atendido(client, mock_session):
             "urgency_level": "alta",
             "priority_number": 100,
             "status": "atendido",
-            "created_at": "2026-08-25T10:00:00"
+            "created_at": "2026-08-25T10:00:00",
+            "temperature": 37.5,
+            "systolic_pressure": 120,
+            "diastolic_pressure": 80,
+            "heart_rate": 78,
+            "oxygen_saturation": 97
             }    
         mock_session.commit.assert_called_once()
         mock_session.refresh.assert_called_once_with(mock_patient)    
@@ -351,6 +431,11 @@ def test_update_patient_status_atendido_no_email(client, mock_session):
     mock_patient.priority_number = 100
     mock_patient.status = "aguardando"
     mock_patient.created_at = datetime(2026, 8, 25, 10, 0, 0)
+    mock_patient.temperature = 37.5
+    mock_patient.systolic_pressure = 120
+    mock_patient.diastolic_pressure = 80
+    mock_patient.heart_rate = 78
+    mock_patient.oxygen_saturation = 97
 
     mock_session.query.return_value.filter.return_value.first.return_value = mock_patient
     mock_session.query.return_value.filter.return_value.all.return_value = []
@@ -369,7 +454,12 @@ def test_update_patient_status_atendido_no_email(client, mock_session):
             "urgency_level": "alta",
             "priority_number": 100,
             "status": "atendido",
-            "created_at": "2026-08-25T10:00:00"
+            "created_at": "2026-08-25T10:00:00",
+            "temperature": 37.5,
+            "systolic_pressure": 120,
+            "diastolic_pressure": 80,
+            "heart_rate": 78,
+            "oxygen_saturation": 97
             }    
         mock_session.commit.assert_called_once()
         mock_session.refresh.assert_called_once_with(mock_patient)    

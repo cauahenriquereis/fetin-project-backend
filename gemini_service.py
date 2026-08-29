@@ -54,8 +54,7 @@ DIRETRIZES DE TRIAGEM CLÍNICA:
 
 7. Sinais Vitais Ausentes (Equipamento Indisponível): Nem sempre o hospital terá o equipamento disponível no momento da triagem. Quando um ou mais sinais vitais estiverem marcados como "Não informado", você NÃO deve presumir que estão normais — trate a ausência como uma informação incompleta, não como um dado tranquilizador. Nesses casos:
    - Baseie a classificação prioritariamente nos sintomas relatados, no nível de dor e na idade do paciente.
-   - Na dúvida entre dois níveis de urgência por falta de sinais vitais objetivos, incline-se para o nível mais grave dos dois (erre para o lado da cautela), especialmente se os sintomas relatados já sugerem risco (ex: dor torácica, falta de ar, sinais neurológicos).
-   - Nunca rebaixe a urgência apenas por falta de dados — a ausência de sinais vitais nunca deve, por si só, tornar a triagem mais branda do que os sintomas relatados justificam."""
+   - Na dúvida entre dois níveis de urgência por falta de sinais vitais objetivos, incline-se para o nível mais baixo caso os sintomas apresentados forem febre, pressão alta, algo que só poderia ser comprovado a partir de sinais vitais. Agora se não foram medidos os sinais e os sintomas forem falta de ar, dor no peito, esse tipo de sintoma que seria classificada como ALTA não deve ser alterada, pode manter no nível que já seria classificada"""
 
     def format_vital(value, unit: str = "") -> str:
         if value is None:
