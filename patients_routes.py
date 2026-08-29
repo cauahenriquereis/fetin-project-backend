@@ -60,6 +60,7 @@ async def get_patient(
 
 @patient_router.patch("/{patient_id}/vitals", response_model=PatientOutput)
 async def update_vital_signs(
+    patient_id: int, 
     vitalsigns_input : VitalSignsInput,
     session: Session = Depends(pegar_sessao),
     symptoms_analyze_fn = Depends(get_symptoms_analyze_fn),
@@ -67,7 +68,20 @@ async def update_vital_signs(
     email_fn = Depends(get_email_fn),
     ):
 
-    analyze = await symptoms_analyze_fn(patient_input.symptoms, patient_input.pain_level, patient_input.age)
+    patient = session.query(Patient).filter(Patient.id == patient_id).first()
+    if not patient:
+        raise HTTPException(status_code=404, detail="Paciente não encontrado")
+
+    analyze = await symptoms_analyze_fn(
+        patient.symptoms,
+        patient.pain_level,
+        patient.age,
+        vitalsigns_input.temperature,
+        vitalsigns_input.systolic_pressure,
+        vitalsigns_input.diastolic_pressure,
+        vitalsigns_input.heart_rate,
+        vitalsigns_input.oxygen_saturation,
+    )
 
     urgency_level = analyze["urgency_level"]
     
@@ -81,13 +95,27 @@ async def update_vital_signs(
     
     if last_patient:
         if last_patient.priority_number == 199 or last_patient.priority_number == 299:
-                priority_number = urgency_weight * 100
-        else:    
-                priority_number = last_patient.priority_number + 1
-    else:
             priority_number = urgency_weight * 100
+        else:    
+            priority_number = last_patient.priority_number + 1
+    else:
+        priority_number = urgency_weight * 100
+
+    patient.temperature = vitalsigns_input.temperature
+    patient.systolic_pressure = vitalsigns_input.systolic_pressure
+    patient.diastolic_pressure = vitalsigns_input.diastolic_pressure
+    patient.heart_rate = vitalsigns_input.heart_rate
+    patient.oxygen_saturation = vitalsigns_input.oxygen_saturation
+    patient.urgency_level = urgency_level
+    patient.priority_number = priority_number
+    patient.status = "aguardando"
+
+    session.commit()
+    session.refresh(patient)
     
-    if new_patient.email:
-        queue_position, waiting_time = calc_fn(new_patient, session)
-        email_fn(new_patient.full_name, new_patient.email, queue_position, waiting_time)
+    if patient.email:
+        queue_position, waiting_time = calc_fn(patient, session)
+        email_fn(patient.full_name, patient.email, queue_position, waiting_time)
+
+    return patient
 
