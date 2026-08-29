@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column,String,Integer,DateTime, Enum, Text, ForeignKey
+from sqlalchemy import create_engine, Column,String,Integer,DateTime, Enum, Text, Float
 from sqlalchemy.orm import declarative_base
 from dotenv import load_dotenv
 from config import DATABASE_URL
@@ -16,7 +16,12 @@ class Patient(Base):
     email = Column("email", String(100), nullable=True)
     age = Column("age", Integer, nullable=False)
     symptoms = Column("symptoms", Text, nullable=False)
-    pain_level = Column("pain_level", Integer, nullable=False)   
+    pain_level = Column("pain_level", Integer, nullable=False)  
+    temperature = Column("temperature", Float, nullable=True) 
+    systolic_pressure = Column("systolic_pressure", Integer, nullable=True)
+    diastolic_pressure = Column("diastolic_pressure", Integer, nullable=True)
+    heart_rate = Column("heart_rate", Integer, nullable=True)
+    oxygen_saturation = Column("oxygen_saturation", Integer, nullable=True)
     urgency_level = Column("urgency_level", Enum("baixa", "média", "alta", name="urgency_level_enum"))
     priority_number = Column("priority_number", Integer)
     status = Column("status", Enum("aguardando", "em atendimento", "atendido", name="patient_status_enum"), nullable=False)
