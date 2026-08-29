@@ -40,3 +40,10 @@ class LoginRequest(BaseModel):
 
 class StatusUpdate(BaseModel):
     new_status: Literal["aguardando", "em atendimento", "atendido"]
+
+class VitalSignsInput(BaseModel):
+    temperature: float
+    systolic_pressure: int
+    diastolic_pressure: int
+    heart_rate: int
+    oxygen_saturation: int

@@ -24,10 +24,10 @@ class Patient(Base):
     oxygen_saturation = Column("oxygen_saturation", Integer, nullable=True)
     urgency_level = Column("urgency_level", Enum("baixa", "média", "alta", name="urgency_level_enum"))
     priority_number = Column("priority_number", Integer)
-    status = Column("status", Enum("aguardando", "em atendimento", "atendido", name="patient_status_enum"), nullable=False)
+    status = Column("status", Enum("aguardando", "em atendimento", "atendido", "aguardando_sinais_vitais", name="patient_status_enum"), nullable=False)
     created_at = Column("created_at", DateTime, nullable=False)
 
-    def __init__ (self, full_name, email, age, symptoms, pain_level, urgency_level, priority_number, status, created_at):
+    def __init__ (self, full_name, email, age, symptoms, pain_level, status, created_at, urgency_level=None, priority_number=None):
         self.full_name = full_name
         self.email = email
         self.age = age
