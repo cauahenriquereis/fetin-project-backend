@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Literal
+from typing import Literal, Optional
 from datetime import datetime
 
 class PatientInput(BaseModel):
@@ -47,8 +47,8 @@ class StatusUpdate(BaseModel):
     new_status: Literal["aguardando", "em atendimento", "atendido"]
 
 class VitalSignsInput(BaseModel):
-    temperature: float = Field(ge=30.0, le=43.0)
-    systolic_pressure: int = Field(ge=60, le=250)
-    diastolic_pressure: int = Field(ge=30, le=150)
-    heart_rate: int = Field(ge=30, le=220)
-    oxygen_saturation: int = Field(ge=50, le=100)
+    temperature: Optional[float] = Field(default=None, ge=30.0, le=43.0)
+    systolic_pressure: Optional[int] = Field(default=None, ge=60, le=250)
+    diastolic_pressure: Optional[int] = Field(default=None, ge=30, le=150)
+    heart_rate: Optional[int] = Field(default=None, ge=30, le=220)
+    oxygen_saturation: Optional[int] = Field(default=None, ge=50, le=100)
