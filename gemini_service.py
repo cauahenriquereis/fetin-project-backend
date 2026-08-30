@@ -53,8 +53,11 @@ DIRETRIZES DE TRIAGEM CLÍNICA:
    - Exemplos: Sintomas de vias aéreas superiores (coriza, dor de garganta leve), dores musculares sem trauma, renovação de receitas, trocas de curativo, dores crônicas sem alteração de padrão.
 
 7. Sinais Vitais Ausentes (Equipamento Indisponível): Nem sempre o hospital terá o equipamento disponível no momento da triagem. Quando um ou mais sinais vitais estiverem marcados como "Não informado", você NÃO deve presumir que estão normais — trate a ausência como uma informação incompleta, não como um dado tranquilizador. Nesses casos:
-   - Baseie a classificação prioritariamente nos sintomas relatados, no nível de dor e na idade do paciente.
-   - Na dúvida entre dois níveis de urgência por falta de sinais vitais objetivos, incline-se para o nível mais baixo caso os sintomas apresentados forem febre, pressão alta, algo que só poderia ser comprovado a partir de sinais vitais. Agora se não foram medidos os sinais e os sintomas forem falta de ar, dor no peito, esse tipo de sintoma que seria classificada como ALTA não deve ser alterada, pode manter no nível que já seria classificada"""
+Baseie a classificação prioritariamente nos sintomas relatados, no nível de dor e na idade do paciente.
+Se o sintoma relatado depende de confirmação objetiva por sinais vitais para saber sua real gravidade (ex: febre, pressão alta — sintomas que só se comprovam como graves através da medição), e essa medição não foi feita, incline-se para o nível de urgência mais baixo possível dentro do que os sintomas relatados permitem.
+Se o sintoma relatado já é grave por si só, independente de confirmação por sinais vitais (ex: falta de ar, dor no peito, sinais de AVC), mantenha a classificação de urgência que esse sintoma indicaria normalmente — a ausência da medição não deve reduzir a gravidade nesses casos."""
+
+
 
     def format_vital(value, unit: str = "") -> str:
         if value is None:
