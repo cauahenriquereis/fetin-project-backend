@@ -83,6 +83,9 @@ async def update_vital_signs(
         vitalsigns_input.oxygen_saturation,
     )
 
+    if not analyze.get("sintomas_validos", True):
+        raise HTTPException(status_code=422, detail="Descrição de sintomas inválida. Por favor, descreva o que está sentindo.")
+
     urgency_level = analyze["urgency_level"]
     
     urgency_order = {"alta": 1, "média": 2, "baixa": 3}

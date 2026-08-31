@@ -39,6 +39,9 @@ class TriageResponse(BaseModel):
     urgency_level: Literal["baixa", "média", "alta"] = Field(
         description="Nível de urgência estrito."
     )
+    sintomas_validos: bool = Field(
+        description="False se a descrição não corresponde a um sintoma médico real (ex: piadas, texto aleatório, ausência de queixa)."
+    )
 
 class LoginRequest(BaseModel):
     senha: str   

@@ -55,9 +55,10 @@ DIRETRIZES DE TRIAGEM CLÍNICA:
 7. Sinais Vitais Ausentes (Equipamento Indisponível): Nem sempre o hospital terá o equipamento disponível no momento da triagem. Quando um ou mais sinais vitais estiverem marcados como "Não informado", você NÃO deve presumir que estão normais — trate a ausência como uma informação incompleta, não como um dado tranquilizador. Nesses casos:
 Baseie a classificação prioritariamente nos sintomas relatados, no nível de dor e na idade do paciente.
 Se o sintoma relatado depende de confirmação objetiva por sinais vitais para saber sua real gravidade (ex: febre, pressão alta — sintomas que só se comprovam como graves através da medição), e essa medição não foi feita, incline-se para o nível de urgência mais baixo possível dentro do que os sintomas relatados permitem.
-Se o sintoma relatado já é grave por si só, independente de confirmação por sinais vitais (ex: falta de ar, dor no peito, sinais de AVC), mantenha a classificação de urgência que esse sintoma indicaria normalmente — a ausência da medição não deve reduzir a gravidade nesses casos."""
+Se o sintoma relatado já é grave por si só, independente de confirmação por sinais vitais (ex: falta de ar, dor no peito, sinais de AVC), mantenha a classificação de urgência que esse sintoma indicaria normalmente — a ausência da medição não deve reduzir a gravidade nesses casos.
 
-
+8. Validação de Entrada: Se o texto em "Sintomas relatados" não descrever uma queixa médica real (ex: "estou muito bem", "sem sintomas", frases de brincadeira, texto sem sentido, ou qualquer coisa que não seja um sintoma propriamente dito), defina sintomas_validos como false. Nesse caso, ainda assim retorne um urgency_level (pode ser "baixa" por padrão), mas o campo sintomas_validos é o que importa para o sistema identificar entrada inválida.
+"""
 
     def format_vital(value, unit: str = "") -> str:
         if value is None:
