@@ -349,3 +349,31 @@ def test_update_vital_signs_with_no_email(client, mock_session):
         app.dependency_overrides.pop(get_calc_fn)
         app.dependency_overrides.pop(get_email_fn)
         app.dependency_overrides.pop(get_symptoms_analyze_fn)
+
+def test_update_vital_signs_invalid_symptoms_returns_422(client, mock_session):
+    mock_calc = MagicMock(return_value=(3, 25))
+    mock_email = MagicMock()
+    mock_analyze = AsyncMock(return_value={"urgency_level": "baixa", "sintomas_validos": False})
+
+    app.dependency_overrides[get_calc_fn] = lambda: mock_calc
+    app.dependency_overrides[get_email_fn] = lambda: mock_email
+    app.dependency_overrides[get_symptoms_analyze_fn] = lambda: mock_analyze
+
+    patient = _make_patient()
+
+    mock_session.query.return_value.filter.return_value.first.return_value = patient
+
+    try:
+        response = client.patch("/patients/1/vitals", json=VITALS_PAYLOAD)
+
+        assert response.status_code == 422
+        assert response.json()["detail"] == "Descrição de sintomas inválida. Por favor, descreva o que está sentindo."
+
+        mock_calc.assert_not_called()
+        mock_email.assert_not_called()
+        mock_session.commit.assert_not_called()
+
+    finally:
+        app.dependency_overrides.pop(get_calc_fn)
+        app.dependency_overrides.pop(get_email_fn)
+        app.dependency_overrides.pop(get_symptoms_analyze_fn)        
