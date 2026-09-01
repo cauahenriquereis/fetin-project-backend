@@ -46,11 +46,11 @@ DIRETRIZES DE TRIAGEM CLÍNICA:
 
 5. Critérios para Urgência MÉDIA (Amarelo adaptado):
    - Condições agudas que necessitam de avaliação médica rápida, sem risco de morte iminente, mas com potencial de deterioração.
-   - Exemplos: Fraturas fechadas, dor abdominal aguda moderada/intensa, cortes profundos necessitando de sutura, febre alta isolada, vômitos persistentes com risco de desidratação, sinais vitais levemente alterados.
+   - Exemplos: Fraturas fechadas, dor abdominal aguda moderada/intensa, cortes profundos necessitando de sutura, vômitos persistentes com risco de desidratação, sinais vitais levemente alterados.
 
 6. Critérios para Urgência BAIXA (Verde/Azul adaptado):
    - Condições crônicas agudizadas sem gravidade, quadros não-urgentes ou queixas leves com sinais vitais dentro da normalidade.
-   - Exemplos: Sintomas de vias aéreas superiores (coriza, dor de garganta leve), dores musculares sem trauma, renovação de receitas, trocas de curativo, dores crônicas sem alteração de padrão.
+   - Exemplos: Sintomas de vias aéreas superiores (coriza, dor de garganta leve), dores musculares sem trauma,febre isolada, renovação de receitas, trocas de curativo, dores crônicas sem alteração de padrão.
 
 7. Sinais Vitais Ausentes (Equipamento Indisponível): Nem sempre o hospital terá o equipamento disponível no momento da triagem. Quando um ou mais sinais vitais estiverem marcados como "Não informado", você NÃO deve presumir que estão normais — trate a ausência como uma informação incompleta, não como um dado tranquilizador. Nesses casos:
 Baseie a classificação prioritariamente nos sintomas relatados, no nível de dor e na idade do paciente.
