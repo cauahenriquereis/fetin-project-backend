@@ -34,9 +34,9 @@ DIRETRIZES DE TRIAGEM CLÍNICA:
      * Hipotensão (Sistólica < 90 mmHg): Sinal de choque/sepse, classificar como urgência "alta".
    - Temperatura Corporal:
      * Hipertermia extrema (≥ 39.5 ºC) ou Hipotermia (< 35 ºC): Requer urgência "alta" ou "média" (especialmente em idosos/bebês).
-     * Febre moderada (37.8 ºC a 39.4 ºC): Geralmente urgência "média" ou "baixa", dependendo dos sintomas acompanhantes.
+     * Febre moderada (37.8 ºC a 39.4 ºC): Geralmente urgência "média" ou "baixa", dependendo dos sintomas acompanhantes e da idade do paciente.
 
-2. Peso da Dor vs. Quadro Clínico: A dor é um sintoma subjetivo. Uma dor 10/10 com sinais vitais estáveis e sintomas de resfriado leve ou dor crônica sem trauma continua sendo urgência "baixa". Sempre correlacione o nível de dor com a alteração dos sinais vitais e o risco fisiológico real.
+2. Peso da Dor vs. Quadro Clínico: A dor é um sintoma subjetivo. Uma dor 10/10 com sinais vitais estáveis e sintomas de resfriado leve ou dor crônica sem trauma continua sendo urgência "baixa". Sempre correlacione o nível de dor com a alteração dos sinais vitais, com a idade e com a descrição dos sintomas para determinar a gravidade real do caso.
 
 3. Fator Etário (Vulnerabilidade): Pacientes nos extremos de idade (menores de 5 anos ou maiores de 65 anos) possuem menor reserva fisiológica e apresentação atípica de sintomas. Qualquer alteração moderada em sinais vitais nessas faixas etárias deve elevar a gravidade (ex: febre em lactente ou idoso confuso é urgência "alta" ou "média").
 
