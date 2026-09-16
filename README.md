@@ -1,4 +1,4 @@
-<img width="1919" height="997" alt="image" src="https://github.com/user-attachments/assets/f86302ce-a980-4fa1-91cd-1b18491a31dd" /># FETIN Triage - Backend
+# FETIN Triage - Backend
 
 An AI-assisted hospital triage system that receives patient symptoms and vital signs, classifies urgency using generative AI, and manages a priority-ordered patient queue.
 
