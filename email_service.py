@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def send_queue_update_email(patient_name: str, patient_email: str, queue_position: int, waiting_time: int):
     try:
         resend.Emails.send({
-            "from": "onboarding@resend.dev",
+            "from": "triagemia@fetin-triagemia.com.br",
             "to": patient_email,
             "subject": "Atualização da sua posição na fila — TriagemIA",
             "html": f"""
