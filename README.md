@@ -1,79 +1,88 @@
 # FETIN Triage — Backend
 
-[![CI](https://github.com/cauahenriquereis/fetin-project-backend/actions/workflows/python-app.yml/badge.svg)](https://github.com/cauahenriquereis/fetin-project-backend/actions/workflows/python-app.yml)
+<p align="center">
+  <img src="https://img.shields.io/badge/FastAPI-0.136-009688?logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white" alt="Python 3.11+" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/AI-Google_Gemini-4285F4?logo=google" alt="Google Gemini" />
+  <img src="https://github.com/cauahenriquereis/fetin-project-backend/actions/workflows/python-app.yml/badge.svg" alt="CI status" />
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License" />
+</p>
 
-FastAPI backend for an AI-assisted hospital triage system. The API receives patient symptoms and vital signs, classifies urgency with Google Gemini, and manages a priority-ordered queue for the medical team.
+<p align="center">
+  <strong>AI-assisted hospital triage API.</strong><br />
+  Receives symptoms and vital signs, classifies urgency, and manages a priority-ordered patient queue.
+</p>
 
-The frontend is maintained in a separate repository: [fetin-project-frontend](https://github.com/cauahenriquereis/fetin-project-frontend).
+<p align="center">
+  <a href="https://fetin-project-backend-production.up.railway.app/docs">Swagger UI</a> ·
+  <a href="https://fetin-triagem-ia.vercel.app/">Live application</a> ·
+  <a href="https://github.com/cauahenriquereis/fetin-project-frontend">Frontend repository</a>
+</p>
 
-## Contents
+> **Project status:** Functional proof of concept deployed to production. This project is intended for demonstration and academic purposes and must not be used as a substitute for professional medical evaluation.
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture and flow](#architecture-and-flow)
-- [Tech stack](#tech-stack)
-- [Getting started](#getting-started)
-- [API overview](#api-overview)
-- [Testing and code quality](#testing-and-code-quality)
-- [Project structure](#project-structure)
-- [Deployment](#deployment)
-- [Roadmap](#roadmap)
+## About the project
 
-## Overview
+FETIN Triage is a FastAPI service that supports a complete triage workflow. It validates patient data, uses Google Gemini to help classify urgency from symptoms and vital signs, stores the patient state in PostgreSQL, and exposes the queue to the medical team through authenticated endpoints.
 
-- **Production API:** [Railway](https://fetin-project-backend-production.up.railway.app)
-- **Interactive API documentation:** [Swagger UI](https://fetin-project-backend-production.up.railway.app/docs)
-- **Frontend application:** [fetin-triagem-ia.vercel.app](https://fetin-triagem-ia.vercel.app/)
+### Workflow
 
-> The doctor dashboard at `/medico` is password-protected. Contact the project owner if you need demo credentials.
+```text
+POST /patients/register
+          ↓
+PATCH /patients/{id}/vitals
+          ↓
+Google Gemini classifies urgency
+          ↓
+Patient enters the priority queue
+          ↓
+Doctor updates status through the dashboard
+```
 
 ## Features
 
 - Patient registration and symptom intake
-- AI-based urgency classification using symptoms and vital signs
+- AI-assisted urgency classification using symptoms and vital signs
 - Vital-sign recording for temperature, blood pressure, SpO₂, and heart rate
 - Priority queue ordered by urgency and registration time
-- JWT authentication for doctor dashboard endpoints
+- JWT authentication for doctor operations
 - Email notifications when queue status changes
-- Input validation for implausible or non-medical symptom descriptions
-- Database migrations managed with Alembic
+- Validation for implausible or non-medical symptom descriptions
+- Versioned database migrations with Alembic
+- Interactive OpenAPI documentation through Swagger UI
 
-## Architecture and flow
+## Architecture
 
 ```text
 Next.js frontend
        |
        v
-FastAPI backend ─────> Google Gemini (urgency classification)
+FastAPI backend ─────> Google Gemini
        |
        v
 PostgreSQL (Neon)
 ```
 
-1. The patient submits symptoms through `POST /patients/register`.
-2. A nurse submits vital signs through `PATCH /patients/{id}/vitals`.
-3. The backend classifies urgency and places the patient in the priority queue.
-4. The doctor dashboard reads the queue and updates patient status.
+## Technology
 
-## Tech stack
-
-- **Framework:** FastAPI
+- **API:** FastAPI and Uvicorn
 - **Language:** Python 3.11+
-- **Database:** PostgreSQL (Neon in production)
+- **Database:** PostgreSQL
 - **ORM and migrations:** SQLAlchemy and Alembic
 - **AI:** Google Gemini API
 - **Authentication:** JWT
 - **Email:** Resend API
 - **Testing:** pytest, pytest-asyncio, and httpx
+- **Quality and CI:** Flake8 and GitHub Actions
 - **Deployment:** Railway
-- **CI:** GitHub Actions
 
-## Getting started
+## Quick start
 
-### Prerequisites
+### Requirements
 
 - Python 3.11 or newer
-- PostgreSQL database, such as a free [Neon](https://neon.tech) instance
+- PostgreSQL database, such as a [Neon](https://neon.tech) instance
 - Google Gemini API key
 - Resend API key
 
@@ -96,7 +105,7 @@ pip install -r requirements.txt
 
 ### Environment variables
 
-Create a `.env` file in the project root. The application validates these variables during startup:
+Create `.env` in the project root:
 
 ```env
 DATABASE_URL=postgresql://user:password@host/dbname
@@ -107,21 +116,16 @@ GEMINI_API_KEY=your-gemini-api-key
 RESEND_API_KEY=your-resend-api-key
 ```
 
-Never commit `.env` or real credentials to the repository.
+The application validates these variables during startup. Never commit `.env` or real credentials.
 
-### Database migrations
+### Migrations and local server
 
 ```bash
 alembic upgrade head
-```
-
-### Run locally
-
-```bash
 uvicorn main:app --reload
 ```
 
-The API is available at `http://localhost:8000`. Open [`http://localhost:8000/docs`](http://localhost:8000/docs) for the interactive Swagger documentation.
+The API runs at [http://localhost:8000](http://localhost:8000). Interactive documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ## API overview
 
@@ -137,19 +141,23 @@ The API is available at `http://localhost:8000`. Open [`http://localhost:8000/do
 | `POST` | `/doctor/login` | Authenticate a doctor and issue a JWT |
 | `...` | `/doctor/...` | Doctor dashboard operations |
 
-See the [Swagger documentation](https://fetin-project-backend-production.up.railway.app/docs) for complete request and response schemas.
+See the [production Swagger documentation](https://fetin-project-backend-production.up.railway.app/docs) for complete schemas and endpoints.
 
-## Testing and code quality
+## Testing and continuous integration
 
-Run the test suite locally with:
+Run the test suite locally:
 
 ```bash
 pytest
 ```
 
-The test suite covers patient, queue, and doctor routes, authentication, token handling, and the Gemini and email services. External services are mocked where appropriate.
+The tests cover patient, queue, and doctor routes, authentication, token handling, and Gemini and email services. External dependencies are mocked where appropriate.
 
-Every push to `main` and pull request targeting `main` is checked by [GitHub Actions](.github/workflows/python-app.yml). The workflow runs Flake8 and the pytest suite using Python 3.11 and a PostgreSQL service container.
+The [GitHub Actions workflow](.github/workflows/python-app.yml) runs automatically on pushes to `main` and pull requests targeting `main`. It:
+
+- installs dependencies with Python 3.11;
+- runs Flake8 checks; and
+- executes pytest against a PostgreSQL 16 service container.
 
 ## Project structure
 
@@ -174,14 +182,17 @@ Every push to `main` and pull request targeting `main` is checked by [GitHub Act
 
 ## Deployment
 
-The production API is deployed on [Railway](https://railway.app), with automatic deployment on pushes to `main`.
+The production API is deployed on [Railway](https://railway.app), with automatic deployment from the `main` branch.
 
-CI and deployment are separate concerns: GitHub Actions validates linting and tests, while Railway publishes the application.
+CI and deployment are already configured:
+
+- **GitHub Actions** validates linting and tests.
+- **Railway** publishes the API and handles production deployment.
 
 ## Roadmap
 
-- Optional Bluetooth integration with vital-sign devices (thermometer, blood pressure monitor, and pulse oximeter), currently out of scope
+- Optional Bluetooth integration with vital-sign devices, currently out of scope
 
 ## License
 
-This project is available under the [MIT License](LICENSE).
+This project is distributed under the [MIT License](LICENSE).
