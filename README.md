@@ -1,18 +1,34 @@
-# FETIN Triage - Backend
+# FETIN Triage — Backend
 
-An AI-assisted hospital triage system that receives patient symptoms and vital signs, classifies urgency using generative AI, and manages a priority-ordered patient queue.
+<p align="center">
+  <img src="https://img.shields.io/badge/FastAPI-0.136-009688?logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white" alt="Python 3.11+" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/AI-Google_Gemini-4285F4?logo=google" alt="Google Gemini" />
+  <img src="https://github.com/cauahenriquereis/fetin-project-backend/actions/workflows/python-app.yml/badge.svg" alt="CI status" />
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License" />
+</p>
 
-This repository contains the backend API. The frontend lives in a separate repository.
+<p align="center">
+  <strong>AI-assisted hospital triage API.</strong><br />
+  Receives symptoms and vital signs, classifies urgency, and manages a priority-ordered patient queue.
+</p>
 
-## Live Demo
+<p align="center">
+  <a href="https://fetin-project-backend-production.up.railway.app/docs">Swagger UI</a> ·
+  <a href="https://fetin-triagem-ia.vercel.app/">Live application</a> ·
+  <a href="https://github.com/cauahenriquereis/fetin-project-frontend">Frontend repository</a>
+</p>
 
-- 🌐 **App:** https://fetin-triagem-ia.vercel.app/
-- 📑 **API docs (Swagger):** https://fetin-project-backend-production.up.railway.app/docs
-- 🖥️ **Frontend repository:** https://github.com/cauahenriquereis/fetin-project-frontend
+> **Project status:** Functional proof of concept deployed to production. This project is intended for demonstration and academic purposes and must not be used as a substitute for professional medical evaluation.
+
+## About the project
+
+FETIN Triage is a FastAPI service that supports a complete triage workflow. It validates patient data, uses Google Gemini to help classify urgency from symptoms and vital signs, stores the patient state in PostgreSQL, and exposes the queue to the medical team through authenticated endpoints.
 
 ### Doctor dashboard
 
-> **Note:** The doctor dashboard (`/medico`) is password-protected. Feel free to reach out if you'd like demo credentials to explore it.
+The doctor dashboard is available at `/medico` and is protected by password authentication. If you would like to explore this area, please contact the project owner to request demo credentials.
 
 **Login screen:**
 
@@ -22,86 +38,86 @@ This repository contains the backend API. The frontend lives in a separate repos
 
 <img width="1915" height="998" alt="Doctor dashboard" src="https://github.com/user-attachments/assets/0cef48d0-fb32-42be-8742-814a95a7c7bf" />
 
+### Workflow
 
-## Table of Contents
-
-- [Features](#features)
-- [Live Demo](#live-demo)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Environment Variables](#environment-variables)
-  - [Database Setup](#database-setup)
-  - [Running the Server](#running-the-server)
-- [API Overview](#api-overview)
-- [Testing](#testing)
-- [Project Structure](#project-structure)
-- [Deployment](#deployment)
-- [Roadmap](#roadmap)
+```text
+POST /patients/register
+          ↓
+PATCH /patients/{id}/vitals
+          ↓
+Google Gemini classifies urgency
+          ↓
+Patient enters the priority queue
+          ↓
+Doctor updates status through the dashboard
+```
 
 ## Features
 
 - Patient registration and symptom intake
-- AI-based urgency classification (Google Gemini) combining reported symptoms and vital signs
-- Nurse-facing endpoint for recording vital signs (temperature, blood pressure, SpO2, heart rate)
-- Priority queue management with automatic ordering by urgency
-- JWT-authenticated doctor dashboard endpoints
-- Email notifications on queue status updates
-- Input validation for symptom plausibility (flags non-medical/invalid input via AI)
-
-## Tech Stack
-
-- **Framework:** FastAPI
-- **Database:** PostgreSQL (hosted on Neon)
-- **ORM / Migrations:** SQLAlchemy + Alembic
-- **AI:** Google Gemini API
-- **Auth:** JWT
-- **Email:** Resend API
-- **Testing:** pytest, pytest-asyncio, httpx
-- **Hosting:** Railway
+- AI-assisted urgency classification using symptoms and vital signs
+- Vital-sign recording for temperature, blood pressure, SpO₂, and heart rate
+- Priority queue ordered by urgency and registration time
+- JWT authentication for doctor operations
+- Email notifications when queue status changes
+- Validation for implausible or non-medical symptom descriptions
+- Versioned database migrations with Alembic
+- Interactive OpenAPI documentation through Swagger UI
 
 ## Architecture
 
+```text
+Next.js frontend
+       |
+       v
+FastAPI backend ─────> Google Gemini
+       |
+       v
+PostgreSQL (Neon)
 ```
-Client (Next.js frontend)
-        |
-        v
-   FastAPI backend  ---->  Gemini AI (urgency classification)
-        |
-        v
-  PostgreSQL (Neon)
-```
 
-The typical patient flow:
+## Technology
 
-1. Patient fills out the intake form → `POST /patients/register` (status: `aguardando_sinais_vitais`)
-2. Nurse records vital signs → `PATCH /patients/{id}/vitals` (triggers AI classification, assigns priority)
-3. Patient enters the queue, ordered by urgency and registration time
-4. Doctor dashboard consumes the queue and updates patient status as they are seen
+- **API:** FastAPI and Uvicorn
+- **Language:** Python 3.11+
+- **Database:** PostgreSQL
+- **ORM and migrations:** SQLAlchemy and Alembic
+- **AI:** Google Gemini API
+- **Authentication:** JWT
+- **Email:** Resend API
+- **Testing:** pytest, pytest-asyncio, and httpx
+- **Quality and CI:** Flake8 and GitHub Actions
+- **Deployment:** Railway
 
-## Getting Started
+## Quick start
 
-### Prerequisites
+### Requirements
 
-- Python 3.11+
-- A PostgreSQL database (e.g. a free [Neon](https://neon.tech) instance)
-- A Google Gemini API key
+- Python 3.11 or newer
+- PostgreSQL database, such as a [Neon](https://neon.tech) instance
+- Google Gemini API key
+- Resend API key
 
 ### Installation
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+git clone https://github.com/cauahenriquereis/fetin-project-backend.git
+cd fetin-project-backend
+python -m venv .venv
+
+# Linux/macOS
+source .venv/bin/activate
+
+# Windows PowerShell
+# .venv\\Scripts\\Activate.ps1
+
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Environment Variables
+### Environment variables
 
-Create a `.env` file in the project root:
+Create `.env` in the project root:
 
 ```env
 DATABASE_URL=postgresql://user:password@host/dbname
@@ -112,79 +128,83 @@ GEMINI_API_KEY=your-gemini-api-key
 RESEND_API_KEY=your-resend-api-key
 ```
 
-### Database Setup
+The application validates these variables during startup. Never commit `.env` or real credentials.
 
-Run migrations with Alembic:
+### Migrations and local server
 
 ```bash
 alembic upgrade head
-```
-
-### Running the Server
-
-```bash
 uvicorn main:app --reload
 ```
 
-The API will be available at `http://localhost:8000`, with interactive docs at `http://localhost:8000/docs`.
+The API runs at [http://localhost:8000](http://localhost:8000). Interactive documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-## API Overview
+## API overview
 
-| Method | Endpoint                        | Description                                  |
-|--------|----------------------------------|-----------------------------------------------|
-| POST   | `/patients/register`            | Register a new patient                        |
-| GET    | `/patients/{id}`                | Get a patient by ID                           |
-| PATCH  | `/patients/{id}/vitals`         | Submit vital signs, triggers AI classification|
-| GET    | `/queue/status`                 | Get the current queue, ordered by priority    |
-| GET    | `/queue/status/{id}`            | Get a specific patient's position/status      |
-| PATCH  | `/queue/{id}`                   | Update a patient's status                     |
-| DELETE | `/queue/{id}`                   | Remove a patient from the queue               |
-| POST   | `/doctor/login`                 | Doctor authentication (issues JWT)            |
-| ...    | `/doctor/...`                   | Doctor dashboard actions (see `doctor_routes.py`) |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/patients/register` | Register a patient |
+| `GET` | `/patients/{id}` | Retrieve a patient |
+| `PATCH` | `/patients/{id}/vitals` | Submit vital signs and classify urgency |
+| `GET` | `/queue/status` | Retrieve the priority queue |
+| `GET` | `/queue/status/{id}` | Retrieve a patient's queue status |
+| `PATCH` | `/queue/{id}` | Update patient status |
+| `DELETE` | `/queue/{id}` | Remove a patient from the queue |
+| `POST` | `/doctor/login` | Authenticate a doctor and issue a JWT |
+| `...` | `/doctor/...` | Doctor dashboard operations |
 
-Full request/response schemas are available via the auto-generated Swagger docs at `/docs`.
+See the [production Swagger documentation](https://fetin-project-backend-production.up.railway.app/docs) for complete schemas and endpoints.
 
-## Testing
+## Testing and continuous integration
 
-The test suite covers all routers (`patients`, `queue`), authentication dependencies, and the Gemini/email services, using mocked sessions and mocked external calls (no real DB or AI calls in tests).
+Run the test suite locally:
 
 ```bash
 pytest
 ```
 
-## Project Structure
+The tests cover patient, queue, and doctor routes, authentication, token handling, and Gemini and email services. External dependencies are mocked where appropriate.
 
-```
+The [GitHub Actions workflow](.github/workflows/python-app.yml) runs automatically on pushes to `main` and pull requests targeting `main`. It:
+
+- installs dependencies with Python 3.11;
+- runs Flake8 checks; and
+- executes pytest against a PostgreSQL 16 service container.
+
+## Project structure
+
+```text
 .
-├── main.py
-├── config.py
-├── models.py
-├── schemas.py
-├── dependencies.py
-├── patients_routes.py
-├── queue_routes.py
-├── doctor_routes.py
-├── gemini_service.py
-├── email_service.py
-├── alembic/
+├── main.py                 # FastAPI application entry point
+├── config.py               # Environment variables and application config
+├── models.py               # SQLAlchemy models
+├── schemas.py              # Pydantic schemas
+├── dependencies.py         # Shared FastAPI dependencies
+├── patients_routes.py      # Patient registration and vital signs
+├── queue_routes.py         # Queue operations
+├── doctor_routes.py        # Authentication and doctor operations
+├── gemini_service.py       # AI classification service
+├── email_service.py        # Email notification service
+├── alembic/                # Database migrations
 ├── alembic.ini
 ├── pytest.ini
 ├── requirements.txt
-└── tests/
-    ├── conftest.py
-    ├── test_patients_routes.py
-    ├── test_queue_routes.py
-    ├── test_gemini_service.py
-    ├── test_email_service.py
-    ├── test_token_generator.py
-    └── test_verify_token.py
+└── tests/                  # Automated tests
 ```
 
 ## Deployment
 
-The backend is deployed on [Railway](https://railway.app), connected to the GitHub repository for automatic deploys on push to the main branch.
+The production API is deployed on [Railway](https://railway.app), with automatic deployment from the `main` branch.
+
+CI and deployment are already configured:
+
+- **GitHub Actions** validates linting and tests.
+- **Railway** publishes the API and handles production deployment.
 
 ## Roadmap
 
-- CI pipeline to run the test suite automatically on push/PR (GitHub Actions)
-- Optional Bluetooth integration with vital-sign measurement devices (thermometer, blood pressure monitor, pulse oximeter) — currently out of scope
+- Optional Bluetooth integration with vital-sign devices, currently out of scope
+
+## License
+
+This project is distributed under the [MIT License](LICENSE).
