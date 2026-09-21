@@ -16,6 +16,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "https://fetin-triagem-ia.vercel.app",
+        "https://fetin-triagemia.com.br",
+        "https://www.fetin-triagemia.com.br",
     ],
     allow_credentials=True,
     allow_methods=["*"],
