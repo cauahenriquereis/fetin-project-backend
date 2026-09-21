@@ -26,6 +26,18 @@
 
 FETIN Triage is a FastAPI service that supports a complete triage workflow. It validates patient data, uses Google Gemini to help classify urgency from symptoms and vital signs, stores the patient state in PostgreSQL, and exposes the queue to the medical team through authenticated endpoints.
 
+### Doctor dashboard
+
+The doctor dashboard is available at `/medico` and is protected by password authentication. If you would like to explore this area, please contact the project owner to request demo credentials.
+
+**Login screen:**
+
+<img width="1919" height="997" alt="Doctor login screen" src="https://github.com/user-attachments/assets/41b4b7af-3681-4a4f-ae41-301c773dfbb5" />
+
+**Dashboard view:**
+
+<img width="1915" height="998" alt="Doctor dashboard" src="https://github.com/user-attachments/assets/0cef48d0-fb32-42be-8742-814a95a7c7bf" />
+
 ### Workflow
 
 ```text
