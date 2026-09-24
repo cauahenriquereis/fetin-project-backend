@@ -120,5 +120,15 @@ async def update_vital_signs(
         queue_position, waiting_time = calc_fn(patient, session)
         email_fn(patient.full_name, patient.email, queue_position, waiting_time)
 
+    waiting_patients_with_email = session.query(Patient).filter(
+        Patient.status == "aguardando",
+        Patient.id != patient.id,
+        Patient.email.isnot(None),
+    ).all()
+
+    for p in waiting_patients_with_email:
+        queue_position, waiting_time = calc_fn(p, session)
+        email_fn(p.full_name, p.email, queue_position, waiting_time)    
+
     return patient
 
